@@ -10,4 +10,4 @@ The Hydra Project
 ## Usage
 
 - In `deps/poly-commit`: `cargo build`
-- In `protocols/main/protocol_name.cpp`: `g++ -fopenmp -o protocol_name protocol_name.cpp`, `./protocol_name`
+- In `protocols/main/protocol_name.cpp`: compile with `g++ -fopenmp -o protocol_name protocol_name.cpp`, run with `./protocol_name`
