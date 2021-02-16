@@ -4,7 +4,7 @@ The Hydra Project
 
 ## Requirements
 
-- GCC
+- C++11 (g++)
 - Rust (cargo)
 
 ## Usage
