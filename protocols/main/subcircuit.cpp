@@ -487,7 +487,7 @@ void pipeline(){
   }
 }
 
-const bool PIPELINE = false;
+const bool PIPELINE = true;
 
 int main(){
   cout << "creating circuit..." << endl;

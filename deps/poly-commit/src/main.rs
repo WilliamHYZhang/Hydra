@@ -38,10 +38,10 @@ fn main() {
     }
   }
 
-  let poly = SparseMultilinearExtension::from_evaluations(2, &poly_vec);
+  let poly = SparseMultilinearExtension::from_evaluations(point_dim, &poly_vec);
 
   let mut rng = test_rng();
-  let uni_params = MultilinearPC::<E>::setup(2, &mut rng);
+  let uni_params = MultilinearPC::<E>::setup(point_dim, &mut rng);
 
   let nv = poly.num_vars;
   let (ck, vk) = MultilinearPC::<E>::trim(&uni_params, nv);
