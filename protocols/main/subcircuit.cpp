@@ -1,6 +1,14 @@
 /*
 William Zhang
-*INSERT DATE HERE*
+
+Last Updated: February 17, 2021
+
+Implementation of the subcircuit protocol described in "Hydra: Succinct Fully
+Pipelineable Interactive Arguments of Knowledge" by Zhang and Xia.
+
+Polynomial and arithmetic logic based on Thaler's implementation described in
+"Practical Verified Computation with Streaming Interactive Proofs" by Cormode,
+Mitzenmacher, and Thaler.
 */
 
 #include <bits/stdc++.h>
@@ -15,23 +23,28 @@ William Zhang
 using namespace std;
 
 typedef struct gate{
-  int type; // 0 add, 1 mult
-  uint64_t val;
-  int in1;
-  int in2;
-  uint64_t wire;
-  uint64_t beta;
+  int type; //0 add, 1 mult
+  uint64_t val; //value of the gate
+  int in1; //left parent
+  int in2; //right parent
+  uint64_t wire; //scalar wire contribution
+  uint64_t beta; //scalar beta contribution
 } gate;
 
+//circuit represented as 2d vector of gates
 typedef vector<vector<gate>> circ;
 circ c;
+
+//subcircuits represented as a vector of circuits
 vector<circ> subcirc;
 
+//fast modular arithmetic for %PRIME
 uint64_t mod(uint64_t x){
   uint64_t ret = (x >> 61) + (x & PRIME);
   return ret >= PRIME ? ret - PRIME : ret;
 }
 
+//fast modular multiplication for %PRIME
 inline uint64_t modMult(uint64_t x, uint64_t y){
   uint64_t hi_x = x >> 32;
   uint64_t hi_y = y >> 32;
@@ -47,6 +60,7 @@ inline uint64_t modMult(uint64_t x, uint64_t y){
   return ret;
 }
 
+//fast modular exponentiation for %PRIME
 uint64_t modPow(uint64_t b, uint64_t e){
   uint64_t ret;
   if(e == 1){
@@ -64,6 +78,7 @@ uint64_t modPow(uint64_t b, uint64_t e){
   }
 }
 
+//extended euclidian algorithm
 void eucl(uint64_t u, uint64_t &u1, uint64_t &u2, uint64_t &u3){
   u1 = 1;
   u2 = 0;
@@ -89,6 +104,7 @@ void eucl(uint64_t u, uint64_t &u1, uint64_t &u2, uint64_t &u3){
   } while(v3 != 0 && v3 != PRIME);
 }
 
+//modular multiplicative inverse
 uint64_t inv(uint64_t a)
 {
   uint64_t u1;
@@ -103,36 +119,30 @@ uint64_t inv(uint64_t a)
   }
 }
 
+//fast modular division for %PRIME
 uint64_t modDiv(uint64_t a, uint64_t b){
   uint64_t i = inv(b);
   return modMult(i, a);
 }
 
+//lagrange interpolation of v
 uint64_t interp(uint64_t v, vector<uint64_t> &r, uint64_t n, int r_i){
-  //cout << "interp called with v: " << v << " n: " << n << " ri: " << r_i << endl;
   uint64_t x = v;
   uint64_t c = 1;
   for(uint64_t i = 0; i < n; ++i){
-    //cout << "rbit: " << r[r_i + i];
     if(x & 1){
-      //cout << " yes ";
       c = modMult(c, r[r_i + i]);
     }
     else{
-      //cout << " no ";
-      //c = modMult(c, 1);
       c = modMult(c, 1+PRIME - r[r_i + i]);
     }
-    //cout << endl;
     x >>= 1;
   }
-  //cout << "interp: " << c << endl;
   return c;
 }
 
+//beta polynomial at k
 uint64_t beta(int mi, vector<uint64_t> &z, uint64_t k){
-  //cout << "beta called with mi: " << mi << " k: " << k << " z: " << endl;
-  //for(auto i : z) cout << i << " "; cout << endl; 
   uint64_t ret = 1;
   uint64_t x = k;
   for(int i = 0; i < mi; ++i){
@@ -144,20 +154,19 @@ uint64_t beta(int mi, vector<uint64_t> &z, uint64_t k){
     }
     x >>= 1;
   }
-  //cout << "returning: " << ret << endl;
   return ret;
 }
 
+//evaluate w_i polynomial
 uint64_t w_i(int mi, int ni, int i, vector<uint64_t> &r, int r_i, int b){
   uint64_t ret = 0;
   for(uint64_t k = 0; k < ni; ++k){
-    //cout << "gate val: " << subcirc[b][i][k].val  << endl; //<< " interp: " << interp(k, r, mi, r_i) << endl;
     ret = mod(ret + modMult(subcirc[b][i][k].val, interp(k, r, mi, r_i)));
-    //cout << "ret: " << ret << endl;
   }
   return ret;
 }
 
+//extrapolate polynomial v to r
 uint64_t extrap(vector<uint64_t> &v, uint64_t n, uint64_t r){
   uint64_t ret = 0;
   uint64_t mult = 1;
@@ -178,15 +187,14 @@ uint64_t extrap(vector<uint64_t> &v, uint64_t n, uint64_t r){
 
 uint64_t log2_max, gates_max;
 
-uint64_t sumcheck(int lvl, vector<uint64_t> &z, uint64_t ri, int b, vector<pair<uint64_t, uint64_t>> &points){
+//main sumcheck protocol
+uint64_t sumcheck(int lvl, vector<uint64_t> &z, uint64_t ri, int b){
   int mi = FAST_LOG2_UP(subcirc[b][lvl].size());
   int ni = subcirc[b][lvl].size();
   int mip1 = FAST_LOG2_UP(subcirc[b][lvl-1].size());
   int nip1 = subcirc[b][lvl-1].size();
 
-  //cout << "lvl: " << lvl << " ri: " << ri << " b: " << b << endl;
   int num_var = mi + 2 * mip1;
-  //cout << "NUM VAR: " << num_var << endl;
   int num_effective = modPow(2, mip1);
   uint64_t alpha_p, beta_p;
 
@@ -194,29 +202,21 @@ uint64_t sumcheck(int lvl, vector<uint64_t> &z, uint64_t ri, int b, vector<pair<
   for(int i = 0; i < num_var; ++i){
     r.push_back(rand());
   }
-  
-  //cout << "r set up" << endl;
 
   for(uint64_t k = 0; k < ni; ++k){
     subcirc[b][lvl][k].beta = beta(mi, z, k);
-    //cout << "setting lvl: " << lvl << " id: " << k << " beta to: " << subcirc[b][lvl][k].beta << endl;
     subcirc[b][lvl][k].wire = 1;
   }
-
-  //cout << "beta set up" << endl;
 
   vector<vector<uint64_t>> poly;
   for(int k = 0; k < num_var; ++k){
     poly.push_back({0, 0, 0});
   }
-  //cout << "poly set up" << endl;
 
   vector<uint64_t> val;
   for(int k = 0; k < num_effective; ++k){
     val.push_back(k < nip1 ? subcirc[b][lvl-1][k].val : 0);
   }
-
-  //cout << "val set up" << endl;
 
   uint64_t beta = 0;
   uint64_t k_j;
@@ -225,7 +225,6 @@ uint64_t sumcheck(int lvl, vector<uint64_t> &z, uint64_t ri, int b, vector<pair<
   uint64_t index;
   
   for(int j = 0; j < num_var; ++j){
-    //cout << "round: " << j << endl;
     if(j > mi && (j != mi + mip1)){
       for(int k = 0; k < num_effective; ++k){
         index = k >> 1;
@@ -239,13 +238,11 @@ uint64_t sumcheck(int lvl, vector<uint64_t> &z, uint64_t ri, int b, vector<pair<
       num_effective >>= 1;
     }
     if(j == mi + mip1){
-      //cout << "RESETTING" << endl;
       num_effective = modPow(2, mip1);
       for(int k = 0; k < num_effective; ++k){
         val[k] = k < nip1 ? subcirc[b][lvl-1][k].val : 0;
       }
       w1 = w_i(mip1, nip1, lvl-1, r, mi, b);
-      //cout << "w1: " << w1 << endl;
     }
     if(j == mi){
       beta = subcirc[b][lvl][0].beta;
@@ -372,7 +369,6 @@ uint64_t sumcheck(int lvl, vector<uint64_t> &z, uint64_t ri, int b, vector<pair<
           }
         }
 
-        //cout << "beta: " << beta << " wire: " << wire << endl;
         if(subcirc[b][lvl][k].type == 0){
           poly[j][m] = mod(poly[j][m] + mod(modMult(beta, modMult(wire, mod(w1 + w2)))));
         }
@@ -380,7 +376,6 @@ uint64_t sumcheck(int lvl, vector<uint64_t> &z, uint64_t ri, int b, vector<pair<
           poly[j][m] = mod(poly[j][m] + mod(modMult(beta, modMult(wire, modMult(w1, w2)))));
         }
        
-        //cout << "j: " << j << " m: " << m << " poly: " << poly[j][m] << endl;
       }
     }
   }
@@ -445,7 +440,9 @@ uint64_t sumcheck(int lvl, vector<uint64_t> &z, uint64_t ri, int b, vector<pair<
   return ret;
 }
 
-const int DEPTH = 10000, WIDTH = 128;
+int DEPTH, WIDTH;
+
+//randomly creates a circuit to the specified depth and width
 void create_circuit(){
   for(int i = 0; i < DEPTH; ++i){
     vector<gate> level;
@@ -465,6 +462,7 @@ void create_circuit(){
   }
 }
 
+//evaluates the circuit
 void eval_circuit(){
   for(int i = 1; i < c.size(); ++i){
     log2_max = max(log2_max, FAST_LOG2_UP(c[i].size()));
@@ -479,17 +477,22 @@ void eval_circuit(){
   }
 }
 
-const int SUB_WIDTH = 100;
+int SUB_DEPTH;
+
+//pipeline the circuit by splitting it up into subcircuits
 void pipeline(){
-  for(int i = 0; i < c.size(); i += SUB_WIDTH){
-    vector<vector<gate>> sub(c.begin()+(i==0 ? 0 : i-1), i+SUB_WIDTH >= c.size() ? c.end() : c.begin()+i+SUB_WIDTH);
+  for(int i = 0; i < c.size(); i += SUB_DEPTH){
+    vector<vector<gate>> sub(c.begin()+(i==0 ? 0 : i-1), i+SUB_DEPTH >= c.size() ? c.end() : c.begin()+i+SUB_DEPTH);
     subcirc.push_back(sub);
   }
 }
 
-const bool PIPELINE = true;
+bool SUBCIRCUIT;
 
 int main(){
+  cout << "INPUT: DEPTH WIDTH SUB_DEPTH SUBCIRCUIT" << endl;
+  cin >> DEPTH >> WIDTH >> SUB_DEPTH >> SUBCIRCUIT;
+
   cout << "creating circuit..." << endl;
   auto start = chrono::steady_clock::now();
   create_circuit();
@@ -513,42 +516,40 @@ int main(){
   cout << "proving/verifying..." << endl;
   start = chrono::steady_clock::now();
 
-  if(!PIPELINE){
+  if(!SUBCIRCUIT){
     uint64_t ri;
     vector<uint64_t> z; 
-    for(int j = 0, num = FAST_LOG2_UP(c[c.size()-1].size()); j < num; ++j){
+    for(int i = 0, num = FAST_LOG2_UP(c[c.size()-1].size()); i < num; ++i){
       z.push_back(rand());
     }
     for(int b = 0; b < subcirc.size(); ++b){
-      vector<pair<uint64_t, uint64_t>> points;
       for(int i = subcirc[b].size()-1; i > 0; --i){
-        //cout << "b: " << b << " i: " << i << endl;
-        ri = sumcheck(i, z, ri, b, points);
+        ri = sumcheck(i, z, ri, b);
       }
     }
   }
   else {
+    //parallelized circuit proving
     #pragma omp parallel for
     for(int b = 0; b < subcirc.size(); ++b){
       uint64_t ri = 0;
       vector<uint64_t> z;
       int num = FAST_LOG2_UP(c[c.size()-1].size());
-      for(int j = 0; j < num; ++j){
+      for(int i = 0; i < num; ++i){
         z.push_back(rand());
       }
-      vector<pair<uint64_t, uint64_t>> points;
       for(int i = subcirc[b].size()-1; i > 0; --i){
-        //cout << "b: " << b << " i: " << i << endl;
-        ri = sumcheck(i, z, ri, b, points);
+        ri = sumcheck(i, z, ri, b);
       }
-
-      string cmd = "cd ../../deps/poly-commit cargo run ";
+      
+      //commit w_in/w_out
+      string cmd = "cd ../../deps/poly-commit/target/release && ./hydra-cmd ";
       cmd += to_string(subcirc[b][0].size()) + " ";
       for(int i = 0; i < subcirc[b][0].size(); ++i){
         cmd += to_string(subcirc[b][0][i].val) + " ";
       }
-      cmd += to_string(num) + " ";
       cmd += "1 ";
+      cmd += to_string(num) + " ";
       for(int i = 0; i < num; ++i) {
         cmd += to_string(z[i]) + " ";
       }

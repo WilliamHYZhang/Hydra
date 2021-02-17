@@ -16,7 +16,6 @@ fn convert_bigint(num: u64) -> Fr {
 
 fn main() {
   let args: Vec<String> = env::args().collect();
-  println!("{:?}", args);
   let num_gates = args[1].parse::<usize>().unwrap();
 
   let mut poly_vec = Vec::new();
@@ -33,7 +32,6 @@ fn main() {
     vec_points.push(vec![]);
     for j in 0..point_dim {
       let index = offset + i * point_dim + j;
-      println!("{}", index);
       vec_points[i].push(convert_bigint(args[index].parse::<u64>().unwrap()));
     }
   }
