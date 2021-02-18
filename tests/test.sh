@@ -94,3 +94,5 @@ echo "1048576 256 10 0" | ./hydra > logs/hydra_result31.log
 echo "1048576 256 10 1" | ./hydra > logs/hydra_result32.log
 echo "1048576 256 20 0" | ./hydra > logs/hydra_result33.log
 echo "1048576 256 20 1" | ./hydra > logs/hydra_result34.log
+
+echo "done."
