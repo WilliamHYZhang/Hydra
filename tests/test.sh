@@ -46,7 +46,7 @@ echo "65536 256 512 1" | ./subcircuit > logs/subcircuit_result18.log
 echo "65536 256 256 1" | ./subcircuit > logs/subcircuit_result19.log
 
 #2^20 depth 2^7 width
-echo "1048576 128 16777216 0" | ./subcircuit > logs/subcircuit_result21.log
+echo "1048576 128 1048576 0" | ./subcircuit > logs/subcircuit_result21.log
 echo "1048576 128 524288 1" | ./subcircuit > logs/subcircuit_result22.log
 echo "1048576 128 262144 1" | ./subcircuit > logs/subcircuit_result23.log
 echo "1048576 128 131072 1" | ./subcircuit > logs/subcircuit_result24.log
@@ -57,7 +57,7 @@ echo "1048576 128 8192 1" | ./subcircuit > logs/subcircuit_result28.log
 echo "1048576 128 4096 1" | ./subcircuit > logs/subcircuit_result29.log
 
 #2^20 depth 2^8 width
-echo "1048576 256 16777216 0" | ./subcircuit > logs/subcircuit_result31.log
+echo "1048576 256 1048576 0" | ./subcircuit > logs/subcircuit_result31.log
 echo "1048576 256 524288 1" | ./subcircuit > logs/subcircuit_result32.log
 echo "1048576 256 262144 1" | ./subcircuit > logs/subcircuit_result33.log
 echo "1048576 256 131072 1" | ./subcircuit > logs/subcircuit_result34.log
@@ -76,23 +76,32 @@ echo "65536 128 10 0" | ./hydra > logs/hydra_result1.log
 echo "65536 128 10 1" | ./hydra > logs/hydra_result2.log
 echo "65536 128 20 0" | ./hydra > logs/hydra_result3.log
 echo "65536 128 20 1" | ./hydra > logs/hydra_result4.log
+echo "65536 128 0 0" | ./hydra > logs/hydra_result5.log
+echo "65536 128 0 1" | ./hydra > logs/hydra_result6.log
+
 
 #2^16 depth 2^8 width
 echo "65536 256 10 0" | ./hydra > logs/hydra_result11.log
 echo "65536 256 10 1" | ./hydra > logs/hydra_result12.log
 echo "65536 256 20 0" | ./hydra > logs/hydra_result13.log
 echo "65536 256 20 1" | ./hydra > logs/hydra_result14.log
+echo "65536 256 0 0" | ./hydra > logs/hydra_result15.log
+echo "65536 256 0 1" | ./hydra > logs/hydra_result16.log
 
 #2^20 depth 2^7 width
 echo "1048576 128 10 0" | ./hydra > logs/hydra_result21.log
 echo "1048576 128 10 1" | ./hydra > logs/hydra_result22.log
 echo "1048576 128 20 0" | ./hydra > logs/hydra_result23.log
 echo "1048576 128 20 1" | ./hydra > logs/hydra_result24.log
+echo "1048576 128 0 0" | ./hydra > logs/hydra_result25.log
+echo "1048576 128 0 1" | ./hydra > logs/hydra_result26.log
 
 #2^20 depth 2^8 width
 echo "1048576 256 10 0" | ./hydra > logs/hydra_result31.log
 echo "1048576 256 10 1" | ./hydra > logs/hydra_result32.log
 echo "1048576 256 20 0" | ./hydra > logs/hydra_result33.log
 echo "1048576 256 20 1" | ./hydra > logs/hydra_result34.log
+echo "1048576 256 0 0" | ./hydra > logs/hydra_result35.log
+echo "1048576 256 0 1" | ./hydra > logs/hydra_result36.log
 
 echo "done."
