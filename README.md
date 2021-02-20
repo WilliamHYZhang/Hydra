@@ -4,8 +4,8 @@ The Hydra Project
 
 ## Requirements
 
-- C++11 (g++)
-- Rust (cargo)
+- C++11 (g++ version 7.5+)
+- Rust (cargo version 1.5+)
 
 ## Usage
 
