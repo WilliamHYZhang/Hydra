@@ -1,0 +1,15 @@
+INPUT: DEPTH WIDTH LATENCY(MS) HYDRA
+creating circuit...
+creation time: 17.8534 s
+
+evaluating circuit...
+done, output: 1438995115535198313
+evaluation time: 0.926277 s
+
+generating interpolation points (offline)...
+generation time: 5.17564 s
+
+proving/verifying...
+done.
+protocol time (with latency): 4384.400468 s
+

@@ -1,0 +1,15 @@
+INPUT: DEPTH WIDTH SUB_DEPTH SUBCIRCUIT
+creating circuit...
+creation time: 1.83884 s
+
+evaluating circuit...
+done, output: 1615236151384248933
+evaluation time: 1.52401 s
+
+pipelining circuit...
+pipeline time: 0.73712 s
+
+proving/verifying...
+done.
+protocol time: 27.0951 s
+

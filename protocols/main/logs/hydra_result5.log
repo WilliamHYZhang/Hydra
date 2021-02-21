@@ -1,0 +1,12 @@
+INPUT: DEPTH WIDTH LATENCY(MS) HYDRA
+creating circuit...
+creation time: 17.9343 s
+
+evaluating circuit...
+done, output: 1438995115535198313
+evaluation time: 0.776442 s
+
+proving/verifying...
+done.
+protocol time (with latency): 399.765151 s
+
