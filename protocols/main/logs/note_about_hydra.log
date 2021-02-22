@@ -1,0 +1,3 @@
+Note:
+
+Too much variability in the Hydra tests for the latency, so will revert to 0ms as ground truth, and manually adding the artificial latency instead of re-rerunning the tests.
