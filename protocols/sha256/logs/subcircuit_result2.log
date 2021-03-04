@@ -1,15 +1,15 @@
 INPUT: SUB_DEPTH SUBCIRCUIT
 creating circuit...
-creation time: 3.39317 s
+creation time: 3.36697 s
 
 evaluating circuit...
 done, output: 0
-evaluation time: 0.609853 s
+evaluation time: 0.615175 s
 
 pipelining circuit...
-pipeline time: 0.55165 s
+pipeline time: 0.54577 s
 
 proving/verifying...
 done.
-protocol time: 43.7935 s
+protocol time: 40.0307 s
 
