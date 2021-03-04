@@ -1,0 +1,13 @@
+INPUT: LATENCY(MS) HYDRA
+creating circuit...
+creation time: 0.0133153 s
+
+evaluating circuit...
+1
+done, output: 1
+evaluation time: 0.000191026 s
+
+proving/verifying...
+done.
+protocol time (with latency): 0.000001 s
+

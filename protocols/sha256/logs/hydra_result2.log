@@ -1,0 +1,16 @@
+INPUT: LATENCY(MS) HYDRA
+creating circuit...
+creation time: 0.0146891 s
+
+evaluating circuit...
+1
+done, output: 1
+evaluation time: 0.000200197 s
+
+generating interpolation points (offline)...
+generation time: 1.3094e-05 s
+
+proving/verifying...
+done.
+protocol time (with latency): 0.012185 s
+
