@@ -516,7 +516,7 @@ void op(int a_id, int b_id, int x_id, int op){
 }
 
 void create_circuit(){
-  ifstream fin("test");
+  ifstream fin("raw.circuit");
   int tmp;
   fin >> tmp >> tmp >> tmp >> tmp >> tmp;
 
