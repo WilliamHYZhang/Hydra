@@ -17,7 +17,7 @@ echo "done."
 echo "running subcircuit tests..."
 echo "5383 0" | ./subcircuit > logs/subcircuit_result1.log
 echo "68 1" | ./subcircuit > logs/subcircuit_result2.log
-echo "10 1" | ./subcircuit > logs/subcircuit_result2.log
+echo "10 1" | ./subcircuit > logs/subcircuit_result3.log
 
 echo "done."
 
