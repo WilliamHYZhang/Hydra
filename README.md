@@ -16,4 +16,4 @@ The Hydra Project
 ## Testing
 
 To run tests (compile, run, and log automatically): `sh name_of_test.sh` in `tests/`
-VDF tests are run seperately with `python3 test_vdf.py` in `tests\`
+VDF tests are run seperately with `python3 test_vdf.py` in `tests/`
