@@ -4,6 +4,8 @@ The Hydra Project
 
 ## Requirements
 
+Linux Environment
+
 - C++11 (g++ version 7.5+)
 - Rust (cargo version 1.5+)
 - Python (python3 version 3.6.9+)
@@ -16,4 +18,5 @@ The Hydra Project
 ## Testing
 
 To run tests (compile, run, and log automatically): `sh name_of_test.sh` in `tests/`
+
 VDF tests are run seperately with `python3 test_vdf.py` in `tests/`
