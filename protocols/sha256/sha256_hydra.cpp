@@ -1,7 +1,7 @@
 /*
 William Zhang
 
-Last Updated: March 2, 2021
+Last Updated: March 23, 2021
 
 Implementation of the Hydra protocol described in "Hydra: Succinct Fully
 Pipelineable Interactive Arguments of Knowledge" by Zhang and Xia.
@@ -11,6 +11,9 @@ Polynomial and arithmetic logic based on Thaler's implementation described in
 Mitzenmacher, and Thaler.
 
 This version is specific to testing with the SHA-256 boolean circuit.
+
+Version update 03/23/21: support for verifiable delay functions, i.e. SHA-256
+repeatedly chained.
 */
 
 #include <bits/stdc++.h>
@@ -191,8 +194,6 @@ bool HYDRA;
 
 //main sumcheck protocol
 pair<uint64_t, pair<uint64_t, uint64_t>> sumcheck(int lvl, vector<uint64_t> &z, uint64_t ri, pair<vector<uint64_t>, vector<uint64_t>> &challenges, int tmp_index){
-  
-  cout << "start" << endl;
 
   int mi = FAST_LOG2_UP(c[lvl].size());
   int ni = c[lvl].size();
@@ -218,8 +219,6 @@ pair<uint64_t, pair<uint64_t, uint64_t>> sumcheck(int lvl, vector<uint64_t> &z, 
     r.insert(r.end(), challenges.second.begin(), challenges.second.end());
   }
 
-  cout << "here1" << endl;
-
   for(uint64_t k = 0; k < ni; ++k){
     c[lvl][k].beta[tmp_index] = beta(mi, z, k);
     c[lvl][k].wire[tmp_index] = 1;
@@ -234,8 +233,6 @@ pair<uint64_t, pair<uint64_t, uint64_t>> sumcheck(int lvl, vector<uint64_t> &z, 
   for(int k = 0; k < num_effective; ++k){
     val.push_back(k < nip1 ? c[lvl-1][k].val : 0);
   }
-
-  cout << "here" << endl;
 
   uint64_t beta = 0;
   uint64_t k_j;
@@ -515,6 +512,8 @@ void op(int a_id, int b_id, int x_id, int op){
   memo[x_id] = {max(a.root, b.root)+1, vector<int>(1, c[max(a.root, b.root)+1].size()-1)};
 }
 
+string PAYLOAD;
+
 void create_circuit(){
   ifstream fin("raw.circuit");
   int tmp;
@@ -523,7 +522,8 @@ void create_circuit(){
   vector<gate> input_level;
   for(int i = 0; i < WIDTH; ++i){
     gate g;
-    g.val = rand()%2;
+    cout << i << "pushing: " << PAYLOAD[i] - '0' << endl;
+    g.val = PAYLOAD[i] - '0';
     input_level.push_back(g);
     memo[i] = {0, vector<int>(1, i)};
   }
@@ -555,7 +555,6 @@ void create_circuit(){
 
 void add_zeroed(){
   int n = log2_max+1;
-  cout << n << endl;
   vector<uint64_t> zeroed(n, 0);
   for(int i = 0; i < c.size(); ++i){
     for(int j = 0; j < c[i].size(); ++j){
@@ -653,13 +652,22 @@ vector<uint64_t> univar_interp_challenge(vector<pair<pair<uint64_t, uint64_t>, p
     }
   }
   return coeffs;
-} 
+}
+
+void get_circuit_stats(){
+  int total_log2_width = 0;
+  for(int i = 0; i < c.size(); ++i){
+    total_log2_width += FAST_LOG2_UP(c[i].size());
+  }
+  cout << "total log2 width: " << total_log2_width << endl;
+  cout << "log2_max: " << log2_max << endl;
+}
 
 double LATENCY;
 
 int main(){
   cout << "INPUT: LATENCY(MS) HYDRA" << endl;
-  cin >> LATENCY >> HYDRA;
+  cin >> LATENCY >> HYDRA >> PAYLOAD;
 
   if(HYDRA){
     omp_set_max_active_levels(2);
@@ -762,7 +770,6 @@ int main(){
     for(int i = c.size()-1; i > 0; --i){
       //#pragma omp parallel for
       for(int j = 0; j < log2_max+1; ++j){
-        cout << i << " " << j << endl;
         pair<vector<uint64_t>, vector<uint64_t>> challenge_pair = {challenge_interp_points[i][j].second.first, challenge_interp_points[i][j].second.second};
         auto ret = sumcheck(i, query_interp_points[i][j].second, 0, challenge_pair, j);
         query_interp_points[i][j].second.push_back(ret.first);

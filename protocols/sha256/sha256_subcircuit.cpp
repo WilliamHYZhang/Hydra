@@ -495,6 +495,8 @@ void op(int a_id, int b_id, int x_id, int op){
   memo[x_id] = {max(a.root, b.root)+1, vector<int>(1, c[max(a.root, b.root)+1].size()-1)};
 }
 
+string PAYLOAD;
+
 //creates the circuit
 void create_circuit(){
   ifstream fin("raw.circuit");
@@ -504,7 +506,8 @@ void create_circuit(){
   vector<gate> input_level;
   for(int i = 0; i < WIDTH; ++i){
     gate g;
-    g.val = rand()%2;
+    cout << i << "pushing: " << PAYLOAD[i] - '0' << endl;
+    g.val = PAYLOAD[i] - '0';
     input_level.push_back(g);
     memo[i] = {0, vector<int>(1, i)};
   }
@@ -569,7 +572,7 @@ bool SUBCIRCUIT;
 
 int main(){
   cout << "INPUT: SUB_DEPTH SUBCIRCUIT" << endl;
-  cin >> SUB_DEPTH >> SUBCIRCUIT;
+  cin >> SUB_DEPTH >> SUBCIRCUIT >> PAYLOAD;
 
   cout << "creating circuit..." << endl;
   auto start = chrono::steady_clock::now();
