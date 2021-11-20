@@ -1,7 +1,7 @@
 /*
 William Zhang
 
-Last Updated: February 17, 2021
+Last Updated: November 19, 2021
 
 Implementation of the Hydra protocol described in "Hydra: Succinct Fully
 Pipelineable Interactive Arguments of Knowledge" by Zhang and Xia.

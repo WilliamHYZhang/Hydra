@@ -1,12 +1,11 @@
 /*
 William Zhang
 
-Last Updated: February 17, 2021
+Last Updated: November 19, 2021
 
-Implementation of the HydraNet protocol described in "HydraNet: Succinct
-Pipelineable Verifiable Execution of Ultra-deep Neural Networks" by Zhang and
-Xia, an application of the subcircuit protocol described in "Hydra: Succinct
-Fully Pipelineable Interactive Arguments of Knowledge" by Zhang and Xia.
+Implementation of the HydraNet protocol described in "Hydra: Pipelineable
+Interactive Arguments of Knowledge for Verifiable Neural Networks" by Zhang and
+Xia.
 
 Polynomial and arithmetic logic based on Thaler's implementation described in
 "Practical Verified Computation with Streaming Interactive Proofs" by Cormode,
@@ -792,7 +791,6 @@ int main(int argc, char** argv)
   {
     for (int j = 0; j < pipeline[i].size(); ++j)
     {
-      cout << "start sub " << i+1 << " layer " << j+1 << endl;
       e = pipeline[i][j][0];
       d = pipeline[i][j][1];
       f = pipeline[i][j][2];
