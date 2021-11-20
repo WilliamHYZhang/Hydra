@@ -1,6 +1,6 @@
 # Hydra
 
-The Hydra Project (https://www.hydrasec.ml/)
+The Hydra Project
 
 ePrint (extended version): https://eprint.iacr.org/2021/641
 
