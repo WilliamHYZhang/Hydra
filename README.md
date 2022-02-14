@@ -4,7 +4,7 @@ The Hydra Project
 
 ePrint (extended version): https://eprint.iacr.org/2021/641
 
-Accepted to IEEE TPS 2021.
+Accepted to IEEE TPS 2021 (Best Paper Award).
 
 ## Requirements
 
